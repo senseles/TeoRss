@@ -1,0 +1,31 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:of="http://omnifaces.org/functions"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/templates/errorLayout.xhtml">
+
+    <ui:define name="content">
+        <p:panel header="Sistemos klaida">
+            <h3>Atleiskite, įvyko klaida</h3>
+            <ul>
+                <li>Data/laikas #{of:formatDate(now, 'yyyy-MM-dd HH:mm:ss')}</li>
+                <li>Naršyklė: #{header['user-agent']}</li>
+                <li>Naudotojo IP: #{empty header['x-forwarded-for'] ? request.remoteAddr :
+                    fn:split(header['x-forwarded-for'], ',')[0]}</li>
+                <li>Užklausos adresas: <a href="#{requestScope['javax.servlet.error.request_uri']}">#{requestScope['javax.servlet.error.request_uri']}</a>
+                </li>
+                <li>Ajax užklausa: #{facesContext.partialViewContext.ajaxRequest ? 'Yes' : 'No'}</li>
+                <li>Klaidos kodas: #{requestScope['javax.servlet.error.status_code']}</li>
+                <li>Trikio tipas: #{requestScope['javax.servlet.error.exception_type']}</li>
+                <li>Trikio pranešimas: #{requestScope['javax.servlet.error.message']}</li>
+                <li>Pilna klaidos informacija: <pre>
+                        <code>#{of:printStackTrace(requestScope['javax.servlet.error.exception'])}</code>
+                    </pre></li>
+            </ul>
+            <h:outputScript rendered="#{facesContext.partialViewContext.ajaxRequest}">scrollTo(0, 0);</h:outputScript>
+        </p:panel>
+    </ui:define>
+</ui:composition>

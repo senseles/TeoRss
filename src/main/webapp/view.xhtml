@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>Teo Rss</title>
+</h:head>
+<h:body>
+	<h:form>
+		<f:event listener="#{feedManager.init()}" type="preRenderView" />
+		<p:growl id="messages"></p:growl>
+
+		<p:dataTable id="dataTableForView" var="feed"
+			value="#{feedManager.view()}" editable="true" widgetVar="feedEdit"
+			rowKey="#{feed.id}">
+			
+			<f:facet name="header">
+            		Feeds RSS
+        		</f:facet>
+
+			<p:ajax event="rowEdit" listener="#{feedManager.onRowEdit}"
+				update="@([id=messages])" />
+			<p:ajax event="rowEditCancel" listener="#{feedManager.onRowCancel}"
+				update="@([id=messages])" />
+
+			<p:column style="width:16px">
+				<p:rowToggler />
+			</p:column>
+			<p:column headerText="Id">
+				<h:outputText value="#{feed.id}" />
+			</p:column>
+
+			<p:column headerText="Url">
+				<h:outputText value="#{feed.url}" />
+			</p:column>
+
+			<p:column headerText="Name">
+				<h:outputText value="#{feed.name}" />
+			</p:column>
+
+			<p:column headerText="Title">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{feed.title}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{feed.title}" style="width:100%"
+							label="Title" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			
+			<p:column headerText="Last Update">
+				<h:outputText value="#{feed.lastUpdate}" />
+			</p:column>
+
+			<p:column headerText="" style="width:32px">
+				<p:rowEditor />
+			</p:column>
+
+			<p:rowExpansion>
+				<p:dataTable var="item" value="#{feedManager.getFeedItem(feed)}">
+					<p:column headerText="Id">
+						<h:outputText value="#{item.id}" />
+					</p:column>
+					<p:column headerText="Title">
+						<h:outputText value="#{item.title}" />
+					</p:column>
+					<p:column headerText="Link">
+						<h:outputText value="#{item.link}" />
+					</p:column>
+					<p:column headerText="Description">
+						<h:outputText value="#{item.published}" />
+					</p:column>
+					<p:column headerText="Published">
+						<h:outputText value="#{item.published}" />
+					</p:column>
+
+				</p:dataTable>
+			</p:rowExpansion>
+		</p:dataTable>
+
+		<p:commandButton value="back" onclick="history.go(-1)"
+			update="messages" process="@form"></p:commandButton>
+
+	</h:form>
+</h:body>
+</html>
